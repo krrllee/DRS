@@ -1,0 +1,15 @@
+
+h1{
+    text-align: center;
+}
+.login-button{
+    display: grid;
+    margin-bottom: 50px;
+    margin-left: 600px;
+    width: 200px;
+}
+.register-button{
+    margin-left: 600px;
+    width: 200px;
+}
+

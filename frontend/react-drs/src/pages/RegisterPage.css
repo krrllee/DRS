@@ -1,0 +1,72 @@
+*{
+    background-color:slategray;
+}
+
+.register{
+    
+    border: 1px solid;
+    border-color: white;
+    margin: auto;
+    width: 30%;
+    padding: 10px;
+}
+h1{
+    font-size: 50px;
+    color:aliceblue;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    text-align: center;
+    border-bottom: 20px;
+}
+label{
+    color: aliceblue;
+}
+input{
+    margin: 8px;
+    background-color:whitesmoke;
+    border-color: aliceblue;
+}
+.username-label{
+    margin-right: 50px;
+}
+.firstname-label{
+    margin-right: 47.5px;
+}
+.lastname-label{
+    margin-right: 48.5px;
+}
+.address-label{
+    margin-right: 63.5px;
+}
+.city-label{
+    margin-right: 93px;
+}
+.state-label{
+    margin-right: 84px;
+}
+.pn-label{
+    margin-right: 15px;
+}
+.email-label{
+    margin-right: 82px;
+}
+.password-label{
+    margin-right: 53px;
+}
+.submit{
+    margin:0;
+    border-color: aliceblue;
+    color: aliceblue;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  border: 0;
+}
+button{
+    border-color: aliceblue;
+    color:aliceblue;
+    padding: 10px;
+
+}
+
