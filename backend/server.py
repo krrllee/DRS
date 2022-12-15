@@ -1,5 +1,5 @@
 #import requests
-
+from logging import FileHandler,WARNING
 from collections import defaultdict
 from datetime import datetime
 from psycopg2 import pool
@@ -9,7 +9,9 @@ from flask_bcrypt import Bcrypt
 
 
 app = Flask(__name__)
-cors = CORS(app)
+file_handler = FileHandler('errorlog.txt')
+file_handler.setLevel(WARNING)
+cors = CORS(app,supports_credentials=True)
 bcrypt = Bcrypt(app)
 
 postgreSQL_pool = pool.SimpleConnectionPool(
@@ -22,7 +24,7 @@ app.config['postgreSQL_pool'] = postgreSQL_pool
 def health_check():
     return "I am health!"
 
-@app.route("/registration")
+@app.route("/registration",methods=["POST"])
 def registration():
     username =  request.json["username"]
     first_name = request.json["first_name"]
@@ -30,7 +32,7 @@ def registration():
     adress = request.json["adress"]
     city = request.json["city"]
     state = request.json["state"]
-    phone_number = request.json["phone number"]
+    phone_number = request.json["phone_number"]
     email = request.json["email"]
     password = request.json["password"]
 

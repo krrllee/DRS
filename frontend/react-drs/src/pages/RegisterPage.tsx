@@ -6,28 +6,38 @@ const RegisterPage = () => {
   const [username, setUsername] = useState<string>("");
   const [first_name, setFirstName] = useState<string>("");
   const [last_name, setLastName] = useState<string>("");
-  const [address,setAddress]=useState<string>("");
+  const [adress,setAddress]=useState<string>("");
   const [city,setCity] = useState<string>("");
   const [state,setState] = useState<string>("");
   const [phone_number,setPhoneNumber] = useState<string>("");
   const [email,setEmail]=useState<string>("");
   const [password,setPassword]=useState<string>("");
 
+
   const registerUser = async() => {
     console.log(username,email,password);
-    
-        const resp = await HttpClient.post("//localhost:5000/registration",{
-            username,
-            first_name,
-            last_name,
-            address,
-            city,
-            state,
-            phone_number,
-            email,
-            password,
-        });
-        window.location.href = "/"
+      try{
+        const resp = await HttpClient.post("http://127.0.0.1:5000/registration",{
+          username,
+          first_name,
+          last_name,
+          adress,
+          city,
+          state,
+          phone_number,
+          email,
+          password,
+          
+      });
+      window.location.href = "/";
+      }
+      catch(error:any){
+        if(error.response.status ===401)
+        {
+          alert("Invalid credentials");
+        }
+      }
+        
     
   };
 
@@ -66,7 +76,7 @@ const RegisterPage = () => {
              <label className="address-label">Address</label>
             <input
                 type="text"
-                value={address}
+                value={adress}
                 onChange={(event)=>setAddress(event.target.value)}
                 required
                     />
