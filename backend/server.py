@@ -85,34 +85,37 @@ def registration():
         print("Sva polja moraju biti popunjena!")
     return jsonify(request.json)
 
-@app.route("/login", methods=["POST","GET"])
+@app.route("/login",methods=["POST"])
 def login():
-    email=None
-    password=None
-    if request.method == "POST" and 'email' in request.json and 'password' in request.json:
-        
-        email = request.json["email"]
-        password = request.json["password"]
-
-    conn = postgreSQL_pool.getconn()
-    cur = conn.cursor()
-
-    cur.execute('SELECT * FROM users WHERE email = %s AND password = %s', (email,password))
-    user = cur.fetchone()
-
-    if user:
-        password_rs = user['password']
-        if check_password_hash(password_rs,password):
-            session['loggedin'] = True
-            session['email'] = user["email"]
-            
-            #return 'korisnik je ulogovan'
-            return jsonify(request.json)
-        else:
-            return 'Pogresan username/password'
+    _email = request.json["email"]
+    _password = request.json["password"]
+    if _email and _password:
+        connection = postgreSQL_pool.getconn()
+        cursor = connection.cursor()
+        sql = f"SELECT * FROM users WHERE email='{_email}'"
+        cursor.execute(sql)
+        row = cursor.fetchone()
+        email = row[7]
+        password = row[8]
+        if row:
+            if bcrypt.check_password_hash(password,_password):
+                session['email'] = email
+                cursor.close()
+                return jsonify({'message' : 'You are logged in successfully'})
+            else:
+                resp = jsonify({'message' : 'Bad Request - invalid password'})
+                resp.status_code = 400
+                return resp
     else:
-       return 'Korisnik ne postoji'
-       
+        resp = jsonify({'message' : 'Bad Request - invalid password'})
+        resp.status_code = 400
+        return resp
+
+@app.route('/logout')
+def logout():
+    if 'email' in session:
+        session.pop('email',None)
+    return jsonify({'message':'You successfully logged out'})
 
 @app.route("/change_personal_info",methods=["POST"])
 def change_personal_info():
