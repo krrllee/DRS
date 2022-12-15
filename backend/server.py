@@ -3,9 +3,9 @@ from logging import FileHandler,WARNING
 from collections import defaultdict
 from datetime import datetime
 from psycopg2 import pool
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, session
 from flask_cors import CORS, cross_origin
-from flask_bcrypt import Bcrypt 
+from flask_bcrypt import Bcrypt, check_password_hash
 
 
 app = Flask(__name__)
@@ -66,6 +66,35 @@ def registration():
         print("Username je zauzet od strane drugog korisnika.")
 
     return jsonify(request.json)
+
+@app.route("/login", methods=["POST","GET"])
+def login():
+    email=None
+    password=None
+    if request.method == "POST" and 'email' in request.json and 'password' in request.json:
+        
+        email = request.json["email"]
+        password = request.json["password"]
+
+    conn = postgreSQL_pool.getconn()
+    cur = conn.cursor()
+
+    cur.execute('SELECT * FROM users WHERE email = %s AND password = %s', (email,password))
+    user = cur.fetchone()
+
+    if user:
+        password_rs = user['password']
+        if check_password_hash(password_rs,password):
+            session['loggedin'] = True
+            session['email'] = user["email"]
+            
+            #return 'korisnik je ulogovan'
+            return jsonify(request.json)
+        else:
+            return 'Pogresan username/password'
+    else:
+       return 'Korisnik ne postoji'
+       
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8080, debug=True)
