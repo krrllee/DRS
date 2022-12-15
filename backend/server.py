@@ -25,32 +25,7 @@ app.config['postgreSQL_pool'] = postgreSQL_pool
 def health_check():
     return "I am health!"
 
-@app.route("/login",methods=["POST"])
-def login():
-    _email = request.json["email"]
-    _password = request.json["password"]
-    if _email and _password:
-        connection = postgreSQL_pool.getconn()
-        cursor = connection.cursor()
-        sql = f"SELECT * FROM users WHERE email='{_email}'"
-        cursor.execute(sql)
-        row = cursor.fetchone()
-        username = row[0]
-        email = row[7]
-        password = row[8]
-        if row:
-            if bcrypt.check_password_hash(password,_password):
-                session['username'] = username
-                cursor.close()
-                return jsonify({'message' : 'You are logged in successfully'})
-            else:
-                resp = jsonify({'message' : 'Bad Request - invalid password'})
-                resp.status_code = 400
-                return resp
-    else:
-        resp = jsonify({'message' : 'Bad Request - invalid password'})
-        resp.status_code = 400
-        return resp
+
     
 
 
