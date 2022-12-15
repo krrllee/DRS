@@ -56,7 +56,7 @@ const RegisterPage = () => {
           marginBottom="10px"
         >
           <Heading as="h1" color="purple.500">
-            Register
+            Register your account
           </Heading>
           <FormControl>
             <Grid templateColumns="repeat(2,1fr)" gap={5} marginTop="15px">
