@@ -25,6 +25,21 @@ app.config['postgreSQL_pool'] = postgreSQL_pool
 def health_check():
     return "I am health!"
 
+@app.route("/@me")
+def get_current_user():
+    user_id = session.get("id")
+
+    if not user_id:
+        return jsonify({"error": "Unauthorized"}), 401
+    
+    connection = postgreSQL_pool.getconn()
+    cursor = connection.cursor()
+    sql = f"SELECT * FROM users WHERE id='{user_id}'"
+    cursor.execute(sql)
+    row = cursor.fetchone()
+    return jsonify(
+        row[0],row[8]
+    ) 
 
     
 
@@ -100,11 +115,12 @@ def login():
         sql = f"SELECT * FROM users WHERE email='{_email}'"
         cursor.execute(sql)
         row = cursor.fetchone()
-        email = row[7]
-        password = row[8]
+        user_id = row[0]
+        email = row[8]
+        password = row[9]
         if row:
             if bcrypt.check_password_hash(password,_password):
-                session['email'] = email
+                session['id'] = user_id
                 cursor.close()
                 return jsonify({'message' : 'You are logged in successfully'})
             else:
@@ -116,10 +132,10 @@ def login():
         resp.status_code = 400
         return resp
 
-@app.route('/logout')
+@app.route('/logout', methods=["POST"])
 def logout():
-    if 'email' in session:
-        session.pop('email',None)
+    if 'id' in session:
+        session.pop('id',None)
     return jsonify({'message':'You successfully logged out'})
 
 @app.route("/change_personal_info",methods=["POST"])
