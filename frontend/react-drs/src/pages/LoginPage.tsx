@@ -58,7 +58,7 @@ const LoginPage: React.FC = () => {
               />
             </Stack>
             <Stack justify="space-between" marginTop="10px">
-              <Button
+              <Button    
                 colorScheme="purple"
                 variant="solid"
                 type="button"
