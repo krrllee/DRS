@@ -38,7 +38,7 @@ def get_current_user():
     cursor.execute(sql)
     row = cursor.fetchone()
     return jsonify(
-        row[0],row[8]
+        row[0],row[8],row[9]
     ) 
 
     

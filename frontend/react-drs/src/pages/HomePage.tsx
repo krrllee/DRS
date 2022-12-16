@@ -26,6 +26,7 @@ const HomePage: React.FC = () => {
     (async () => {
       try {
         const resp = await HttpClient.get("//localhost:5000/@me");
+        console.log(resp.data)
         setUser(resp.data);
       } catch (error) {
         console.log("Not authenticated");
