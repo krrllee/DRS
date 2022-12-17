@@ -6,7 +6,7 @@ from psycopg2 import pool
 from flask import Flask, request, jsonify,session
 from flask_cors import CORS, cross_origin
 from flask_bcrypt import Bcrypt 
-
+from logic import Transaction, format_db_row_to_transaction
 
 app = Flask(__name__)
 app.secret_key = "super secret key"
@@ -171,6 +171,30 @@ def change_personal_info():
         query_update = f"UPDATE users SET password = '{hashed_password}' WHERE id='{id}';"
         cursor.execute(query_update)
         connection.commit()
+
+    return jsonify(request.json)
+
+
+@app.route("/add_transaction",methods=["POST, GET"])
+def add_transaction():
+    transac = Transaction()
+    
+    transac.user_id = session.get("id")
+    transac.coin_name = request.json["coin_name"]
+    transac.coin_symbol = request.json["coin_symbol"]
+    transac.transaction_type = request.json["transaction_type"]
+    transac.amount = request.json["amount"]
+    transac.time_transacted = datetime.fromtimestamp(request.json["time_transacted"])
+    transac.time_created = datetime.fromtimestamp(request.json["time_created"])
+    transac.price_purchased_at = float(request.json["email"])
+    transac.no_of_coins = float(request.json["password"])
+
+    connection = postgreSQL_pool.getconn()
+    cursor = connection.cursor()
+
+    insert_statement = f"INSERT INTO transactions (user_id, coin_name, coin_symbol, transaction_type, amount, time_transacted, time_created, price_purchased_at, no_of_coins) VALUES ('{transac.user_id}','{transac.coin_name}','{transac.coin_symbol}','{transac.transaction_type}','{transac.amount}','{transac.time_transacted}','{transac.time_created}','{transac.price_purchased_at}','{transac.no_of_coins}')"
+    cursor.execute(insert_statement)
+    connection.commit()
 
     return jsonify(request.json)
 
