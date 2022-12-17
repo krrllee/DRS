@@ -128,10 +128,11 @@ const EditUserPage = () => {
                 />
                 <FormLabel>Email</FormLabel>
                 <Input
+                  readOnly
                   placeholder="email"
                   type="text"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
+                  value={user[1]}
+                  
                 />
                 <FormLabel>Password</FormLabel>
                 <Input
