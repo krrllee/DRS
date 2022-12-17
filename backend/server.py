@@ -114,6 +114,8 @@ def logout():
 
 @app.route("/change_personal_info",methods=["POST"])
 def change_personal_info():
+
+    id = int(request.json["id"])
     username =  request.json["username"]
     first_name = request.json["first_name"]
     last_name = request.json["last_name"]
@@ -128,7 +130,7 @@ def change_personal_info():
     cursor = connection.cursor()
 
     if (len(username) != 0):
-        query_update = f"UPDATE users SET username = '{username}' WHERE email LIKE '{session['email']};"
+        query_update = f"UPDATE users SET username = '{username}' WHERE id='{id}';"
         query_username = f"SELECT username FROM users WHERE username like '{username}'"
         cursor.execute(query_username)
         resault_username = cursor.fetchall()
@@ -138,43 +140,35 @@ def change_personal_info():
         else:
             print("Username is already in use!")
     if (len(first_name) != 0):
-        query_update = f"UPDATE users SET first_name = '{first_name}' WHERE email LIKE '{session['email']};"
+        query_update = f"UPDATE users SET first_name = '{first_name}' WHERE id='{id}';"
         cursor.execute(query_update)
         connection.commit()
     if (len(last_name) != 0):
-        query_update = f"UPDATE users SET last_name = '{last_name}' WHERE email LIKE '{session['email']};"
+        query_update = f"UPDATE users SET last_name = '{last_name}' WHERE id='{id}';"
         cursor.execute(query_update)
         connection.commit()
     if (len(adress) != 0):
-        query_update = f"UPDATE users SET adress = '{adress}' WHERE email LIKE '{session['email']};"
+        query_update = f"UPDATE users SET adress = '{adress}' WHERE id='{id}';"
         cursor.execute(query_update)
         connection.commit()
     if (len(city) != 0):
-        query_update = f"UPDATE users SET city = '{city}' WHERE email LIKE '{session['email']};"
+        query_update = f"UPDATE users SET city = '{city}' WHERE id='{id}';"
         cursor.execute(query_update)
         connection.commit()
-    if (len(state) != 0):
-        query_update = f"UPDATE users SET state = '{state}' WHERE email LIKE '{session['email']};"
+    if (len(state) != 0): 
+        query_update = f"UPDATE users SET state = '{state}' WHERE id='{id}';"
         cursor.execute(query_update)
         connection.commit()
     if (len(phone_number) != 0):
-        query_update = f"UPDATE users SET phone_number = '{phone_number}' WHERE email LIKE '{session['email']};"
+        query_update = f"UPDATE users SET phone_number = '{phone_number}' WHERE id='{id}';"
         cursor.execute(query_update)
         connection.commit()
     if (len(email) != 0):
-        query_update = f"UPDATE users SET email = '{email}' WHERE email LIKE '{session['email']};"
-        query_email = f"SELECT username FROM users WHERE username like '{email}'"
-        cursor.execute(query_email)
-        resault_email = cursor.fetchall()
-        if(len(resault_email) == 0):
-            cursor.execute(query_update)
-            connection.commit()
-            session['email'] = email
-        else:
-            print("Email is already in use!")
+        query_update = f"UPDATE users SET email = '{email}' WHERE id='{id}';"
+        
     if (len(password) != 0):
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-        query_update = f"UPDATE users SET password = '{hashed_password}' WHERE email LIKE '{session['email']};"
+        query_update = f"UPDATE users SET password = '{hashed_password}' WHERE id='{id}';"
         cursor.execute(query_update)
         connection.commit()
 

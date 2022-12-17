@@ -46,9 +46,10 @@ const HomePage: React.FC = () => {
     <Heading fontSize='2xl'color='whiteAlpha.900'>Crypto portfolio</Heading>
     </VStack>
     <VStack justifyContent={'flex-end'} backgroundColor='purple.500' spacing={4} direction='row' align='flex-end'>
-    <Button variant='solid' borderRadius='none' size='md' colorScheme='purple' type="button">
+    <a href="/edit"><Button variant='solid' borderRadius='none' size='md' colorScheme='purple' type="button">
         Edit user info
     </Button>
+    </a>
       <Button variant='solid' borderRadius='none' size='md' colorScheme='purple' type="button" onClick={() => logOutUser()}>
         Logout
       </Button>
