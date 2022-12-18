@@ -198,5 +198,25 @@ def add_transaction():
 
     return jsonify(request.json)
 
+@app.route("/delete_transactions", methods = ['POST'])
+def delete_transaction():
+
+    transaction = Transaction()
+
+    transaction.id = int(request.json["id"])
+
+    connection = postgreSQL_pool.getconn()
+    cursor = connection.cursor()
+
+    delete = f"DELETE FROM transactions WHERE id = '{id}';"
+    cursor.execute(delete)
+    delete_res = cursor.fetchone()
+    
+    if delete_res:
+        connection.comit()
+        return jsonify({'message' : 'Deleting successfully'})
+    else:
+        return jsonify({'message' : 'Deleting unsuccessfully'})
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8080, debug=True)
