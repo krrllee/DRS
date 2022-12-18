@@ -115,7 +115,7 @@ def logout():
 @app.route("/change_personal_info",methods=["POST"])
 def change_personal_info():
 
-    id = int(request.json["id"])
+    id = request.json["id"]
     username =  request.json["username"]
     first_name = request.json["first_name"]
     last_name = request.json["last_name"]
@@ -175,24 +175,24 @@ def change_personal_info():
     return jsonify(request.json)
 
 
-@app.route("/add_transaction",methods=["POST, GET"])
+@app.route("/add_transaction",methods=["POST"])
 def add_transaction():
-    transac = Transaction()
     
-    transac.user_id = session.get("id")
-    transac.coin_name = request.json["coin_name"]
-    transac.coin_symbol = request.json["coin_symbol"]
-    transac.transaction_type = request.json["transaction_type"]
-    transac.amount = request.json["amount"]
-    transac.time_transacted = datetime.fromtimestamp(request.json["time_transacted"])
-    transac.time_created = datetime.fromtimestamp(request.json["time_created"])
-    transac.price_purchased_at = float(request.json["email"])
-    transac.no_of_coins = float(request.json["password"])
+    
+    user_id = int(request.json["id"])
+    coin_name = request.json["coin_name"]
+    coin_symbol = request.json["coin_symbol"]
+    transaction_type =request.json["transaction_type"]
+    amount =request.json["amount"]
+    time_transacted = datetime.fromtimestamp(request.json["time_transacted"])
+    time_created = datetime.fromtimestamp(request.json["time_created"])
+    price_purchased_at = float(request.json["price_purchased_at"])
+    no_of_coins = float(request.json["no_of_coins"])
 
     connection = postgreSQL_pool.getconn()
     cursor = connection.cursor()
 
-    insert_statement = f"INSERT INTO transactions (user_id, coin_name, coin_symbol, transaction_type, amount, time_transacted, time_created, price_purchased_at, no_of_coins) VALUES ('{transac.user_id}','{transac.coin_name}','{transac.coin_symbol}','{transac.transaction_type}','{transac.amount}','{transac.time_transacted}','{transac.time_created}','{transac.price_purchased_at}','{transac.no_of_coins}')"
+    insert_statement = f"INSERT INTO transactions (user_id, coin_name, coin_symbol, transaction_type, amount, time_transacted, time_created, price_purchase_at, no_of_coins) VALUES ({user_id},'{coin_name}','{coin_symbol}',{transaction_type},{amount},'{time_transacted}','{time_created}',{price_purchased_at},{no_of_coins})"
     cursor.execute(insert_statement)
     connection.commit()
 

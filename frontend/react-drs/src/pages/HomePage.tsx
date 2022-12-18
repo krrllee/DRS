@@ -38,9 +38,9 @@ const HomePage: React.FC = () => {
     <ChakraProvider> 
     <Grid templateColumns="repeat(3,1fr)" >
     <VStack alignItems={'center'} justifyContent={'flex-start'}backgroundColor='purple.500'spacing={4} direction='row'>
-    <Button height={'100%'} variant='solid' borderRadius='none' size='md' colorScheme='purple' type="button">
+    <a href="/addTransaction"><Button height={'100%'} variant='solid' borderRadius='none' size='md' colorScheme='purple' type="button">
         Add transaction
-    </Button>
+    </Button></a>
     </VStack>
     <VStack alignItems={'center'} justifyContent={'center'} backgroundColor='purple.500'spacing={4} direction='row'>
     <Heading fontSize='2xl'color='whiteAlpha.900'>Crypto portfolio</Heading>
