@@ -60,7 +60,7 @@ const HomePage: React.FC = () => {
     <ChakraProvider> 
     <Grid templateColumns="repeat(3,1fr)" >
     <VStack alignItems={'center'} justifyContent={'flex-start'}backgroundColor='purple.500'spacing={4} direction='row'>
-    <a href="/addTransaction"><Button height={'100%'} variant='solid' borderRadius='none' size='md' colorScheme='purple' type="button">
+    <a href="/addTransaction"><Button height={'100%'} variant='solid' borderRadius='none' size='lg' colorScheme='purple' type="button">
         Add transaction
     </Button></a>
     </VStack>

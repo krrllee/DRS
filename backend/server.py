@@ -217,25 +217,25 @@ def all_transactions():
 
     ])
 
-@app.route("/delete_transactions", methods = ['POST'])
+@app.route("/delete_transactions", methods = ["POST"])
 def delete_transaction():
 
-    transaction = Transaction()
-
-    transaction.id = int(request.json["id"])
+    user_id = int(session.get("id"))
+    transaction_id = int(request.json["id"])
 
     connection = postgreSQL_pool.getconn()
     cursor = connection.cursor()
 
-    delete = f"DELETE FROM transactions WHERE id = '{id}';"
+    delete = f"DELETE FROM transactions WHERE id = {transaction_id} AND  user_id = {user_id};"
     cursor.execute(delete)
-    delete_res = cursor.fetchone()
     
-    if delete_res:
-        connection.comit()
-        return jsonify({'message' : 'Deleting successfully'})
-    else:
-        return jsonify({'message' : 'Deleting unsuccessfully'})
+    connection.commit()
+    cursor.close()
+    connection.close()
+    return jsonify("Message:Delete successfully.")
+    
+        
+        
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8080, debug=True)
