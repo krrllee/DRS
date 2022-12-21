@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import HttpClient from "./HttpClient";
+import TransactionItem from "./TransactionItem";
+import TransactionsTable from "./TransactionTable";
 import {
   Center,
   Text,
@@ -11,16 +13,25 @@ import {
   Stack,
   Box,
   Grid,
+  Tr,
+  Td,
+  Th,
+  TableCaption,
+  Table,
+  Thead,
+  Tbody,
 } from "@chakra-ui/react";
-import AddModal from "./components/AddModal";
 
 const HomePage: React.FC = () => {
   const [user, setUser] = useState<string>("");
+  const [transactions,setTransactions] = useState([]);
 
   const logOutUser = async () => {
     await HttpClient.post("//localhost:5000/logout");
     window.location.href = "/";
   };
+
+  
 
   useEffect(() => {
     (async () => {
@@ -31,8 +42,19 @@ const HomePage: React.FC = () => {
       } catch (error) {
         console.log("Not authenticated");
       }
+
+      try {
+        const resp = await HttpClient.get("//localhost:5000/all_transactions");
+        
+        setTransactions(resp.data);
+        console.log(resp.data)
+      } catch (error) {
+        console.log("Not authenticated");
+      }
     })();
+    
   }, []);
+
 
   return (
     <ChakraProvider> 
@@ -55,7 +77,7 @@ const HomePage: React.FC = () => {
       </Button>
     </VStack>
     </Grid>
-    
+    <TransactionsTable transactions={transactions}></TransactionsTable>
     </ChakraProvider>
   );
 };
