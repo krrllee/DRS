@@ -187,7 +187,7 @@ def add_transaction():
     time_transacted = datetime.fromtimestamp(request.json["time_transacted"])
     time_created = datetime.fromtimestamp(request.json["time_created"])
     price_purchased_at = float(request.json["price_purchased_at"])
-    no_of_coins = round(amount/(price_purchased_at*100), 6)
+    no_of_coins = amount/(price_purchased_at*100)
 
     connection = postgreSQL_pool.getconn()
     cursor = connection.cursor()

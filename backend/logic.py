@@ -31,5 +31,5 @@ def format_db_row_to_transaction(row):
        time_transacted=row[6].strftime("%Y/%m/%d"),
        time_created=row[7].strftime("%Y/%m/%d"),
        price_purchased_at=float(row[8]),
-       no_of_coins=float(row[9])
+       no_of_coins=round(float(row[9]), 6)
     )
