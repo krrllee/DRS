@@ -218,24 +218,5 @@ def delete_transaction():
     else:
         return jsonify({'message' : 'Deleting unsuccessfully'})
 
-@app.route("/all_transactions")
-def all_transactions():
-
-    user_id = int(session.get("id"))
-
-    connection = postgreSQL_pool.getconn()
-    cursor = connection.cursor()
-    querry = f"SELECT * FROM transactions WHERE user_id = {user_id}"
-    cursor.execute(querry)
-
-    transactions = cursor.fetchall()
-
-    return jsonify(
-    [
-        format_db_row_to_transaction(transaction)
-        for transaction in transactions
-
-    ])
-
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8080, debug=True)
