@@ -198,6 +198,25 @@ def add_transaction():
 
     return jsonify(request.json)
 
+@app.route("/all_transactions")
+def all_transactions():
+
+    user_id = int(session.get("id"))
+
+    connection = postgreSQL_pool.getconn()
+    cursor = connection.cursor()
+    querry = f"SELECT * FROM transactions WHERE user_id = {user_id}"
+    cursor.execute(querry)
+
+    transactions = cursor.fetchall()
+
+    return jsonify(
+    [
+        format_db_row_to_transaction(transaction)
+        for transaction in transactions
+
+    ])
+
 @app.route("/delete_transactions", methods = ['POST'])
 def delete_transaction():
 
