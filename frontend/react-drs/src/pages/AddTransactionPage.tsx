@@ -33,7 +33,7 @@ const AddTransactionPage: React.FC = () => {
         time_transacted:Date.parse(transaction_date)/1000,
         time_created:Date.now()/1000,
         price_purchased_at,
-        no_of_coins
+  
       });
       window.location.href = "/home";
     } catch (error: any) {
@@ -114,15 +114,7 @@ const AddTransactionPage: React.FC = () => {
                   onChange={(event) => setPricePurchaseAt(event.target.value)}
                 />
               </Grid>
-              <Grid templateColumns="repeat(2,1fr)" gap={2} marginTop="15px">
-                <FormLabel>Number of coins</FormLabel>
-                <Input
-                  placeholder="number of coins"
-                  type="text"
-                  value={no_of_coins}
-                  onChange={(event) => setNoOfCoins(event.target.value)}
-                />
-              </Grid>
+              
             </Grid>
             <Stack justify="space-between" marginTop="50px">
               <Button

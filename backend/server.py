@@ -183,11 +183,11 @@ def add_transaction():
     coin_name = request.json["coin_name"]
     coin_symbol = request.json["coin_symbol"]
     transaction_type =request.json["transaction_type"]
-    amount =request.json["amount"]
+    amount =float(request.json["amount"])
     time_transacted = datetime.fromtimestamp(request.json["time_transacted"])
     time_created = datetime.fromtimestamp(request.json["time_created"])
     price_purchased_at = float(request.json["price_purchased_at"])
-    no_of_coins = float(request.json["no_of_coins"])
+    no_of_coins = amount/price_purchased_at
 
     connection = postgreSQL_pool.getconn()
     cursor = connection.cursor()
