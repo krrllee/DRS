@@ -6,6 +6,7 @@ export default function TransactionItem({ transaction }: { transaction: any }) {
   const[id,setId] = useState();
 
   const deleteTransaction = (id:any) => {
+    console.log(id)
     HttpClient.post("//localhost:5000/delete_transactions",{
       id:id
     }).then((response) => {

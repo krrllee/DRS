@@ -1,4 +1,4 @@
-#import requests
+import requests
 from logging import FileHandler,WARNING
 from collections import defaultdict
 from datetime import datetime
@@ -222,10 +222,9 @@ def all_transactions():
 
 @app.route("/delete_transactions", methods = ["POST"])
 def delete_transaction():
-
     user_id = int(session.get("id"))
     transaction_id = int(request.json["id"])
-
+    print(request.json["id"])
     connection = postgreSQL_pool.getconn()
     cursor = connection.cursor()
 
@@ -239,9 +238,7 @@ def delete_transaction():
     
 @app.route("/get_crypto")
 def get_crypto():
-
     user_id = int(session.get("id"))
-
     portfolio = defaultdict(
         lambda: {
             "coins": 0,
@@ -252,22 +249,23 @@ def get_crypto():
     )
     conn = postgreSQL_pool.getconn()
     cur = conn.cursor()
-    res = f"SELECT coin_symbol, transaction_type, SUM(amount)/100 AS total_amount, SUM(no_of_coins) AS total_coins FROM transaction WHERE user_id = {user_id} GROUP BY coin_symbol, transaction_type;"  
-    cur.execute(res)
+    cur.execute(
+        "SELECT coin_symbol, transaction_type, SUM(amount)/100 AS total_amount, SUM(no_of_coins) AS total_coins FROM transactions GROUP BY coin_symbol, transaction_type"
+    )
     rows = cur.fetchall()
-
     for row in rows:
         coin = row[0]
         transaction_type = row[1]
         transaction_amount = row[2]
         transaction_coins = row[3]
-
-        if transaction_type == 1:
-            portfolio[coin]['total_cost'] += transaction_amount
-            portfolio[coin]['coins'] += transaction_coins
-        else:
-            portfolio[coin]['total_cost'] -= transaction_amount
-            portfolio[coin]['coins'] -= transaction_coins
+    
+    if transaction_type == 1:
+        portfolio[coin]['total_cost'] += transaction_amount
+        portfolio[coin]['coins'] += transaction_coins
+    else:
+            # This is a sell
+        portfolio[coin]['total_cost'] -= transaction_amount
+        portfolio[coin]['coins'] -= transaction_coins
 
     symbol_to_coin_id_map = {
         "BTC": "bitcoin",
@@ -278,31 +276,26 @@ def get_crypto():
         "MANA": "decentraland",
     }
 
-    data = []
+    rollup_response = []
 
     for symbol in portfolio:
-        responce = request.get(
-            f"{LIVE_PRICE_URL}?ids={symbol_to_coin_id_map[symbol]}&vs_currencies=usd").json()
-    live_price = responce[symbol_to_coin_id_map[symbol]]['usd']
+        response = requests.get(f"{LIVE_PRICE_URL}?ids={symbol_to_coin_id_map[symbol]}&vs_currencies=usd").json()
+        live_price = response[symbol_to_coin_id_map[symbol]]['usd']
+        portfolio[symbol]['live_price'] = live_price
+        portfolio[symbol]['total_equity'] = float(portfolio[symbol]['coins']) * live_price
+        rollup_response.append(
+            {
+                "symbol": symbol,
+                "live_price": portfolio[symbol]['live_price'],
+                "total_equity": portfolio[symbol]['total_equity'],
+                "coins": portfolio[symbol]['coins'],
+                "total_cost": portfolio[symbol]["total_cost"]
+            }
+        )
+        
 
-    portfolio[symbol]['live_price'] = live_price
-    portfolio[symbol]['total_equity'] = float(portfolio[symbol]['coins']) * live_price
 
-    #dobitak_gubitak po valuti
-    gain_loss = 0
-    gain_loss += (portfolio[symbol]['total_equity'] - portfolio[symbol]['total_cost']) 
-
-    data.append(
-        {
-            "symbol": symbol,
-            "live_price": portfolio[symbol]['live_price'],
-            "total_equity": portfolio[symbol]['total_equity'],
-            "coins": portfolio[symbol]['coins'],
-            "total_cost": portfolio[symbol]['total_cost'],
-            "gain_loss": portfolio[symbol]['gain_loss']
-        }
-    )
-    return jsonify(data)
+    return jsonify(rollup_response)
 
     
         
